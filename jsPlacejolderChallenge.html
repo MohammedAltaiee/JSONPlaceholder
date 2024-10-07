@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      margin: 0;
+    }
+    #user {
+      background-color: azure;
+      border-radius: 100px;
+      padding: 10px;
+      font-size: 20px;
+      padding-left: 20px;
+      box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      margin-top: 15px;
+    }
+    #user.selected {
+      border: solid #ff6200 2px;
+      background-color: rgba(59, 59, 242, 0.415);
+    }
+    #post {
+      background-color: white;
+      border-radius: 10px;
+      font-size: 20px;
+      padding: 10px;
+      box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+      margin-top: 15px;
+    }
+    body {
+      background: linear-gradient(
+        45deg,
+        rgb(1, 1, 70),
+        rgb(248, 205, 205),
+        rgb(106, 2, 2)
+      );
+      font-family: system-ui;
+    }
+  </style>
+  <body>
+    <!-- main content  -->
+    <div id="content" style="display: flex">
+      <!-- USERS CONTAINER  -->
+      <div style="width: 30%">
+        <!-- user container  -->
+        <div
+          id="users"
+          style="
+            width: 90%;
+
+            height: 100px;
+            margin: 0 auto;
+          "
+        >
+          <!-- user  -->
+          <div id="user">
+            <h3>Mohammed</h3>
+            <h3>altaiem888@gmail.com</h3>
+          </div>
+          <!-- end of user  -->
+        </div>
+        <!-- end of user container  -->
+      </div>
+      <!-- END OF USERS CONTAINER  -->
+      <!-- posts container  -->
+      <div
+        id="posts-continer"
+        style="
+          width: 70%;
+          background-color: rgb(236, 236, 236);
+          border-radius: 15px;
+          padding: 20px 0px;
+        "
+      >
+        <!-- postS  -->
+        <div id="posts" style="width: 90%; margin: 0 auto">
+          <!-- post  -->
+          <div id="post">
+            <h2></h2>
+            <p></p>
+          </div>
+          <!-- end of post  -->
+        </div>
+        <!-- end of postS  -->
+      </div>
+      <!-- end of posts container  -->
+    </div>
+    <!-- end of main content  -->
+  </body>
+
+  <script>
+    function getPosts(userId) {
+      let request = new XMLHttpRequest();
+      request.open(
+        'GET',
+        'https://jsonplaceholder.typicode.com/posts?userId=' + userId
+      );
+      request.responseType = 'json';
+      request.send();
+      request.onload = function () {
+        if (request.status >= 200 && request.status < 300) {
+          let posts = request.response;
+          document.getElementById('posts').innerHTML = '';
+          for (const post of posts) {
+            let content = `
+             <!-- post  -->
+          <div id="post">
+            <h2>${post.title}</h2>
+            <p>
+            ${post.body}
+            </p>
+          </div>
+          <!-- end of post  -->
+            `;
+            document.getElementById('posts').innerHTML += content;
+          }
+        } else {
+          alert('error');
+        }
+      };
+    }
+
+    function getUsers() {
+      let request = new XMLHttpRequest();
+      request.open('GET', 'https://jsonplaceholder.typicode.com/users');
+      request.responseType = 'json';
+      request.send();
+      request.onload = function () {
+        if (request.status >= 200 && request.status < 300) {
+          let users = request.response;
+          document.getElementById('users').innerHTML = '';
+          for (const user of users) {
+            let content = `
+
+            <!-- user  -->
+          <div id="user" onclick="userClicked(${user.id},this)">
+            <h3>${user.name}</h3>
+            <h3>${user.email}</h3>
+          </div>
+          <!-- end of user  -->            `;
+            document.getElementById('users').innerHTML += content;
+          }
+        } else {
+          alert('error');
+        }
+      };
+    }
+    getPosts(1);
+    getUsers();
+    function userClicked(Id, elem) {
+      getPosts(Id);
+      let selectedElements = document.getElementsByClassName('selected');
+      for (element of selectedElements) {
+        element.classList.remove('selected');
+      }
+      elem.classList.add('selected');
+    }
+  </script>
+</html>
